@@ -22,6 +22,10 @@ const productSchema = mongoose.Schema({
       type: String,
     },
   ],
+  brand: {
+    type: String,
+    default: '',
+  },
   price: {
     type: Number,
     default: 0,
@@ -36,6 +40,15 @@ const productSchema = mongoose.Schema({
     required: true,
     min: 0,
     max: 255,
+  },
+  rating: {
+    type: Number,
+  },
+  numReviews: {
+    type: Number,
+  },
+  isFeatured: {
+    type: Boolean,
   },
 });
 
