@@ -3,8 +3,13 @@ const { Category } = require('../models/category');
 const express = require('express');
 const router = express.Router();
 
+// GET all products
 router.get(`/`, async (req, res) => {
-  const productList = await Product.find();
+  /* get just specific fields  
+  const productList = await Product.find().select('name image -_id'); */
+  
+  //get all fields
+  const productList = await Product.find(); 
 
   if (!productList) {
     res.status(500).json({ success: false });
@@ -12,10 +17,21 @@ router.get(`/`, async (req, res) => {
   res.send(productList);
 });
 
+// GET single product
+router.get(`/:id`, async (req, res) => {
+  const product = await Product.findById(req.params.id);
+
+  if (!product) {
+    res.status(500).json({ success: false });
+  }
+  res.send(product);
+});
+
+//POST mew product
 router.post(`/`, async (req, res) => {
   const category = await Category.findById(req.body.category);
   if (!category) return res.status(400).send('Invalid category');
-  
+
   let product = new Product({
     name: req.body.name,
     description: req.body.description,
