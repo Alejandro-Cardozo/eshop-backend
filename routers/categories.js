@@ -2,6 +2,7 @@ const { Category } = require('../models/category');
 const express = require('express');
 const router = express.Router();
 
+// GET all categories
 router.get(`/`, async (req, res) => {
   const categoryList = await Category.find();
 
@@ -11,6 +12,7 @@ router.get(`/`, async (req, res) => {
   res.status(200).send(categoryList);
 });
 
+// GET single category
 router.get('/:id', async (req, res) => {
   const category = await Category.findById(req.params.id);
 
@@ -22,6 +24,7 @@ router.get('/:id', async (req, res) => {
   res.status(200).send(category);
 });
 
+// PUT existing product
 router.put('/:id', async (req, res) => {
   const category = await Category.findByIdAndUpdate(
     req.params.id,
@@ -38,6 +41,7 @@ router.put('/:id', async (req, res) => {
   res.send(category);
 });
 
+// POST new category
 router.post('/', async (req, res) => {
   let category = new Category({
     name: req.body.name,
@@ -51,6 +55,7 @@ router.post('/', async (req, res) => {
   res.send(category);
 });
 
+// DELETE existing product
 router.delete('/:id', (req, res) => {
   Category.findByIdAndRemove(req.params.id)
     .then((category) => {
