@@ -3,13 +3,13 @@ const morgan = require('morgan');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
-app.use(cors());
-app.options('*', cors());
-
 const productRouter = require('./routers/products');
 
 // Setup
 const app = express();
+
+app.use(cors());
+app.options('*', cors());
 
 require('dotenv/config');
 const api = process.env.API_URL;
