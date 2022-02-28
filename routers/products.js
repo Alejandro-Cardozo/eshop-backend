@@ -57,11 +57,11 @@ router.post(`/`, async (req, res) => {
 
 //PUT existing product
 router.put('/:id', async (req, res) => {
-    if (!mongoose.isValidObjectId(req.params.id)) {
-        res.status(400).send('Invalid Product ID')
-    }
-    const category = await Category.findById(req.body.category);
-    if (!category) return res.status(400).send('Invalid category');
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    res.status(400).send('Invalid Product ID');
+  }
+  const category = await Category.findById(req.body.category);
+  if (!category) return res.status(400).send('Invalid category');
 
   const product = await Product.findByIdAndUpdate(
     req.params.id,
@@ -89,21 +89,46 @@ router.put('/:id', async (req, res) => {
 
 // DELETE single product
 router.delete('/:id', (req, res) => {
-    Product.findByIdAndRemove(req.params.id)
-      .then((product) => {
-        if (product) {
-          return res
-            .status(200)
-            .json({ success: true, message: 'the product was deleted!' });
-        } else {
-          return res
-            .status(404)
-            .json({ success: false, message: 'product not found!' });
-        }
-      })
-      .catch((err) => {
-        return res.status(400).json({ success: false, error: err });
-      });
+  Product.findByIdAndRemove(req.params.id)
+    .then((product) => {
+      if (product) {
+        return res
+          .status(200)
+          .json({ success: true, message: 'the product was deleted!' });
+      } else {
+        return res
+          .status(404)
+          .json({ success: false, message: 'product not found!' });
+      }
+    })
+    .catch((err) => {
+      return res.status(400).json({ success: false, error: err });
+    });
+});
+
+// GET total number of products
+router.get(`/get/count`, async (req, res) => {
+  const productCount = await Product.countDocuments();
+
+  if (!productCount) {
+    res.status(500).json({ success: false });
+  }
+  res.send({
+    productCount: productCount,
   });
+});
+
+// GET featured products
+router.get(`/get/featured/:count?`, async (req, res) => {
+  const count = req.params.count ? req.params.count : 0;
+  const featuredProducts = await Product.find({ isFeatured: true }).limit(
+    +count
+  );
+
+  if (!featuredProducts) {
+    res.status(500).json({ success: false });
+  }
+  res.send(featuredProducts);
+});
 
 module.exports = router;
