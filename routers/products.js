@@ -6,11 +6,17 @@ const mongoose = require('mongoose');
 
 // GET all products
 router.get(`/`, async (req, res) => {
+  let filter = {};
+
+  if(req.query.categories) {
+    filter = {category: req.query.categories.split(',')}
+  }
+
   /* get just specific fields  
   const productList = await Product.find().select('name image -_id'); */
 
   //get all fields
-  const productList = await Product.find();
+  const productList = await Product.find(filter).populate('category');
 
   if (!productList) {
     res.status(500).json({ success: false });
