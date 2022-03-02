@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const productRouter = require('./routers/products');
 const categoryRouter = require('./routers/categories');
+const userRouter = require('./routers/users');
 
 // Setup
 const app = express();
@@ -26,6 +27,7 @@ app.use(morgan('tiny'));
 //Routers
 app.use(`${api}/products`, productRouter);
 app.use(`${api}/categories`, categoryRouter);
+app.use(`${api}/users`, userRouter);
 
 mongoose
   .connect(
