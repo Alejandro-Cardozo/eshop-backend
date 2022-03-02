@@ -3,6 +3,9 @@ const morgan = require('morgan');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+const authJwt = require('./helpers/jwt');
+const errorHandler = require('./helpers/error-handler');
+
 const productRouter = require('./routers/products');
 const categoryRouter = require('./routers/categories');
 const userRouter = require('./routers/users');
@@ -23,6 +26,8 @@ const password = process.env.DB_PASSWORD;
 //Middleware
 app.use(express.json());
 app.use(morgan('tiny'));
+app.use(authJwt());
+app.use(errorHandler);
 
 //Routers
 app.use(`${api}/products`, productRouter);
