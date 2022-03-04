@@ -9,6 +9,7 @@ const errorHandler = require('./helpers/error-handler');
 const productRouter = require('./routers/products');
 const categoryRouter = require('./routers/categories');
 const userRouter = require('./routers/users');
+const orderRouter = require('./routers/orders');
 
 // Setup
 const app = express();
@@ -33,6 +34,7 @@ app.use(errorHandler);
 app.use(`${api}/products`, productRouter);
 app.use(`${api}/categories`, categoryRouter);
 app.use(`${api}/users`, userRouter);
+app.use(`${api}/orders`, orderRouter);
 
 mongoose
   .connect(
