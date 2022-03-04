@@ -65,4 +65,42 @@ router.post('/', async (req, res) => {
   res.send(order);
 });
 
+// PUT order status
+router.put('/:id', async (req, res) => {
+  const order = await Order.findByIdAndUpdate(
+    req.params.id,
+    {
+      status: req.body.status,
+    },
+    { new: true }
+  );
+
+  if (!order) return res.status(400).send('the order cannot be updated!');
+
+  res.send(order);
+});
+
+// DELETE Single order
+router.delete('/:id', (req, res) => {
+  Order.findByIdAndRemove(req.params.id)
+    .then(async (order) => {
+      if (order) {
+        console.log(order);
+        await order.orderItems.forEach(async (itemId) => {
+          await OrderItem.findByIdAndRemove(itemId);
+        });
+        return res
+          .status(200)
+          .json({ success: true, message: 'the order was deleted!' });
+      } else {
+        return res
+          .status(404)
+          .json({ success: false, message: 'order not found!' });
+      }
+    })
+    .catch((err) => {
+      return res.status(400).json({ success: false, error: err });
+    });
+});
+
 module.exports = router;

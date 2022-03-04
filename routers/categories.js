@@ -55,7 +55,7 @@ router.post('/', async (req, res) => {
   res.send(category);
 });
 
-// DELETE existing product
+// DELETE existing category
 router.delete('/:id', (req, res) => {
   Category.findByIdAndRemove(req.params.id)
     .then((category) => {
