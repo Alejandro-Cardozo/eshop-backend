@@ -69,7 +69,7 @@ router.post(`/`, uploadOptions.single('image'), async (req, res) => {
   if (!file) return res.status(400).send('No image found in the request');
 
   const fileName = req.file.filename;
-  const basePath = `${req.protocol}://${req.get('host')}/public/upload/`;
+  const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
 
   let product = new Product({
     name: req.body.name,
@@ -109,7 +109,7 @@ router.put('/:id', uploadOptions.single('image'), async (req, res) => {
 
   if (file) {
     const fileName = file.filename;
-    const basePath = `${req.protocol}://${req.get('host')}/public/uploads`;
+    const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
     imagepath = `${basePath}${fileName}`;
   } else {
     imagepath = product.image;
@@ -134,7 +134,8 @@ router.put('/:id', uploadOptions.single('image'), async (req, res) => {
     { new: true }
   );
 
-  if (!updatedProduct) return res.status(500).send('the product cannot be updated!');
+  if (!updatedProduct)
+    return res.status(500).send('the product cannot be updated!');
 
   res.send(updatedProduct);
 });
@@ -182,5 +183,38 @@ router.get(`/get/featured/:count?`, async (req, res) => {
   }
   res.send(featuredProducts);
 });
+
+router.put(
+  '/gallery-images/:id',
+  uploadOptions.array('images', 10),
+  async (req, res) => {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      res.status(400).send('Invalid Product ID');
+    }
+
+    const files = req.files;
+    let imagesPaths = [];
+    const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+
+    if (files) {
+      files.map((file) => {
+        imagesPaths.push(`${basePath}${file.filename}`);
+      });
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params.id,
+      {
+        images: imagesPaths,
+      },
+      { new: true }
+    );
+
+    if (!updatedProduct)
+      return res.status(500).send('the product cannot be updated!');
+
+    res.send(updatedProduct);
+  }
+);
 
 module.exports = router;
